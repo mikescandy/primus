@@ -8,7 +8,6 @@ using Avalonia;
 using Avalonia.Input;
 using Avalonia.Labs.Controls;
 using Avalonia.Threading;
-using primus.app;
 using Primus.Models;
 using SkiaSharp;
 using SKPaintSurfaceEventArgs = Avalonia.Labs.Controls.SKPaintSurfaceEventArgs;

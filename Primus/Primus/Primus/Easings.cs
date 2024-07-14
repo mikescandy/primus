@@ -3,7 +3,7 @@
 
 using System;
 
-namespace primus.app
+namespace Primus
 {
     public static class Easings
     {

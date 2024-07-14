@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using primus.app;
 using SkiaSharp;
 
-namespace Primus.Models
+namespace Primus
 {
     public sealed class Player : IDisposable
     {
