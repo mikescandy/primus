@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Primus.Browser.dll",
   "resources": {
-    "hash": "sha256-u5y5jB/reBEEKqr5fKLJa5uw0RPs7blpW7V1NqJhnkg=",
+    "hash": "sha256-2AzGkhPBn/ZtHOcDaxDiGE2+WukfWhVTB7P1uRmbhi0=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-nOxqfrzmuCONC7jNtkM7oygcZrOsoW096NFsf0MbAOg="
     },
@@ -9,7 +9,7 @@
       "dotnet.runtime.js": "sha256-soZyw6XWXOLKhA26AOyzSpCP5cAsw1wvhdPHSYNTMfQ="
     },
     "wasmNative": {
-      "dotnet.native.wasm": "sha256-fejQe62xTexE+f7zOgcQ0wj7vjGOjJU4P963UsPzHHo="
+      "dotnet.native.wasm": "sha256-aoa8YUlisLytXel+FDdYdrubMpaHnTk086f9qGUnyII="
     },
     "wasmSymbols": {
       "dotnet.native.js.symbols": "sha256-MpiJjmUlDfkH4UBfAUGNeb50oESaEC1mY6odkr54c6w="
@@ -34,8 +34,8 @@
       "Avalonia.Skia.wasm": "sha256-6IqR/sSCJx24nO873q43W6FKrOWK4hWXPlna3IxbemA=",
       "Avalonia.Themes.Fluent.wasm": "sha256-g79WqsmbBgqKL/pZ33YPW0ZJxPuvLs0y30S54nGJIZ4=",
       "HarfBuzzSharp.wasm": "sha256-zLi92y5FIh7Tsp2/f8cDwy2FU75vKbgJdNPIODw/hjc=",
-      "Primus.Browser.wasm": "sha256-0rs29WgeZcvIGu2j+Cud34fjDr6C47HT/rywL7ZhEUY=",
-      "Primus.wasm": "sha256-XUQkX04oXbM9S64PoRO7sHGR5gH7iA9kgVM8O0f3VU0=",
+      "Primus.Browser.wasm": "sha256-XqIh0y9b6bDpOJrxVye6dTfM0/hc5okQH0lI6oPHnuM=",
+      "Primus.wasm": "sha256-ANmB4MjU48rUSjLkAXrpUi+j1ulPN6+Amf/+uJVj/QQ=",
       "ReactiveUI.wasm": "sha256-pUA09ipQEw+VH2LDUfWusfZfkd5e3BHvvT0rSF1qp2w=",
       "SkiaSharp.wasm": "sha256-mCs/fCgumlJGhHw7IFNRGJUj0w97baB2+l06JgjXqjg=",
       "Splat.wasm": "sha256-SynOz7CSO3BgQjUf24YD42upKAV945YdFbY9jSKX2Fw=",
@@ -52,7 +52,7 @@
       "System.Linq.wasm": "sha256-gTFChS/zi1XZapNK5H+KT83zFyRzbOGmBI2Sa4ly7gA=",
       "System.Linq.Expressions.wasm": "sha256-gqLp0thwunz7Tk1QR9LVYl///loz5hHNG65XVmrnrC8=",
       "System.ObjectModel.wasm": "sha256-g/wEd88zbZJ6SQ0XTCeDZwJ+TTb8jYShbT0gFSsXQHQ=",
-      "System.Private.CoreLib.wasm": "sha256-YaLGMW699sUmEPuu4CrmjtqhEa2AvsdLS9w2ks4Ci8Y=",
+      "System.Private.CoreLib.wasm": "sha256-qannJdBcu1EZLTJFTHasD+W8x4KWDSduC7tK5Ph2GsQ=",
       "System.Private.Uri.wasm": "sha256-xugOFnJFCgsQHb61jAO1InBKDDKNq4V31JhcrJZ0aP8=",
       "System.Reactive.wasm": "sha256-b2tY3uy61WnNrAvmASyChIIXH/2CvNLB7wLT5lv+bkQ=",
       "System.Runtime.InteropServices.JavaScript.wasm": "sha256-GiCo0hhdUrunDAd7bYMjeaUHrRMsDqqNVEil9Er2GdQ=",
