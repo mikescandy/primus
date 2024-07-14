@@ -105,18 +105,11 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerExited(object sender, PointerEventArgs e)
     {
-        var id = e.Pointer.Id - 1000;
-        if (id >= _baseColors.Length)
+        if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out _))
         {
             return;
         }
-
-        if (_playerSelectionComplete)
-        {
-            return;
-        }
-
-        var player = _players.GetValueOrDefault(id);
+        
         if (_playerSelectionComplete)
         {
             return;
@@ -208,19 +201,11 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
     {
-        var id = e.Pointer.Id - 1000;
-
-        if (id >= _baseColors.Length)
+        if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out _))
         {
             return;
         }
-
-        if (_playerSelectionComplete)
-        {
-            return;
-        }
-
-        var player = _players.GetValueOrDefault(id);
+        
         if (_playerSelectionComplete)
         {
             return;
@@ -232,19 +217,11 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerMoved(object sender, PointerEventArgs e)
     {
-        var id = e.Pointer.Id - 1000;
-
-        if (id >= _baseColors.Length)
+        if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out _))
         {
             return;
         }
-
-        if (_playerSelectionComplete)
-        {
-            return;
-        }
-
-        var player = _players.GetValueOrDefault(id);
+        
         if (player != null)
         {
             player.Center = ConvertToPixel(e.GetPosition(this));
@@ -252,21 +229,32 @@ public class SkPlayersView : SKCanvasView
     }
 
 
-    private void OnPointerPressed(object sender, PointerPressedEventArgs e)
+    private bool TryGetPlayerFromPointerEvenArgs(PointerEventArgs e, out Player player, out int id)
     {
-        var id = e.Pointer.Id - 1000;
+        player = null;
+        id = e.Pointer.Id - 1000;
 
         if (id >= _baseColors.Length)
         {
-            return;
+            return false;
         }
 
         if (_playerSelectionComplete)
         {
-            return;
+            return false;
         }
 
-        var player = _players.GetValueOrDefault(id);
+        player = _players.GetValueOrDefault(id);
+        return true;
+    }
+
+    private void OnPointerPressed(object sender, PointerPressedEventArgs e)
+    {
+        if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out var id))
+        {
+            return;
+        }
+        
         if (_text == "Tap And Hold")
         {
             _text = "One More Finger";
@@ -280,20 +268,7 @@ public class SkPlayersView : SKCanvasView
         {
             return;
         }
-
-        // try
-        // {
-        //     Vibration.Vibrate(150);
-        // }
-        // catch (FeatureNotSupportedException)
-        // {
-        //     // Do nothing
-        // }
-        // catch
-        // {
-        //     // No idea what happened....
-        // }
-
+        
         Stop();
         if (player is null)
         {
