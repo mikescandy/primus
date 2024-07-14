@@ -100,9 +100,9 @@ public class SkPlayersView : SKCanvasView
         PointerMoved+= OnPointerMoved;
         PointerReleased+= OnPointerReleased;
         _colors = new AvailableColor[_baseColors.Length];
-        _screenDensity = .5f;
+        _screenDensity = 1f;
         _textPaint.TextSize = 50f * _screenDensity;
-
+        IgnorePixelScaling = true;
         for (var index = 0; index < _baseColors.Length; index++)
         {
             var baseColor = _baseColors[index];
@@ -535,6 +535,8 @@ public class SkPlayersView : SKCanvasView
     protected override void OnInitialized()
     {
         base.OnInitialized();
+       
+
         // _timer.Interval = 16;
         // _timer.Elapsed += TimerOnElapsed;
         // _timer.AutoReset = true;
@@ -542,6 +544,17 @@ public class SkPlayersView : SKCanvasView
         // _timer.Start();
         
        
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        var canvasSize = this.CanvasSize;
+        var x0 = this.PointToScreen(new Point(0, 0)).X;
+        var x1 = this.PointToScreen(new Point(canvasSize.Width, 0)).X;
+        var y0 = this.PointToScreen(new Point(0, 0)).Y;
+        var y1 = this.PointToScreen(new Point(0, canvasSize.Height)).Y;
+
     }
 
     private void TimerOnElapsed(object? sender, ElapsedEventArgs e)
