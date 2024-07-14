@@ -24,38 +24,38 @@ jobs:
       run: dotnet tool install --global DotNetCompress --version 3.0.0 --no-cache
 
     - name: Publish .NET Project
-      run: dotnet publish Primus/Primus.Browser/Primus.Browser.csproj -c Release -o release --nologo
+      run: dotnet publish Primus/Primus/Primus.Browser/Primus.Browser.csproj -c Release -o release --nologo
 
     - name: Brotli Compress Output (dll)
-      run: DotNetCompress -d Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/managed -p '*.dll' --format br --threads 4
+      run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/managed -p '*.dll' --format br --threads 4
 
     - name: Brotli Compress Output (js)
-      run: DotNetCompress -d Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.js' --format br --threads 4
+      run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.js' --format br --threads 4
 
     - name: Brotli Compress Output (wasm)
-      run: DotNetCompress -d Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.wasm' --format br --threads 4
+      run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.wasm' --format br --threads 4
 
     - name: GZip Compress Output (dll)
-      run: DotNetCompress -d Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/managed -p '*.dll' --format gz --threads 4
+      run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/managed -p '*.dll' --format gz --threads 4
 
     - name: GZip Compress Output (js)
-      run: DotNetCompress -d Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.js' --format gz --threads 4
+      run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.js' --format gz --threads 4
 
     - name: GZip Compress Output (wasm)
-      run: DotNetCompress -d Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.wasm' --format gz --threads 4
+      run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.wasm' --format gz --threads 4
 
     - name: Change base-tag in index.html from / to Primus
-      run: sed -i 's/<base href="\/" \/>/<base href="\/Primus\/" \/>/g' Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/index.html
+      run: sed -i 's/<base href="\/" \/>/<base href="\/Primus\/" \/>/g' Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/index.html
 
     - name: copy index.html to 404.html
-      run: cp Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/index.html Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/404.html
+      run: cp Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/index.html Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/404.html
 
     - name: Add .nojekyll file
-      run: touch Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/.nojekyll
+      run: touch Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/.nojekyll
 
     - name: Commit wwwroot to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.7
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages
-        FOLDER: Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle
+        FOLDER: Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle
