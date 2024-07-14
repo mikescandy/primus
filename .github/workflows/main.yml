@@ -24,7 +24,7 @@ jobs:
       run: dotnet tool install --global DotNetCompress --version 3.0.0 --no-cache
 
     - name: Publish .NET Project
-      run: dotnet publish Primus/Primus/Primus.Browser/Primus.Browser.csproj -c Release -o release --nologo
+      run: dotnet publish Primus/Primus/Primus.Browser/Primus.Browser.csproj -c Release -o release --nologo -p:NativeDebugSymbols=false -p:StackTraceSupport=false
 
     - name: Brotli Compress Output (dll)
       run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/managed -p '*.dll' --format br --threads 4
