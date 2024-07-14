@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "Primus.Browser.dll",
   "resources": {
-    "hash": "sha256-2AzGkhPBn/ZtHOcDaxDiGE2+WukfWhVTB7P1uRmbhi0=",
+    "hash": "sha256-KgkUPCOfN2VMR69ltkRLZl/94PlGMu7SkRtvmP95QVE=",
     "jsModuleNative": {
       "dotnet.native.js": "sha256-nOxqfrzmuCONC7jNtkM7oygcZrOsoW096NFsf0MbAOg="
     },
@@ -34,8 +34,8 @@
       "Avalonia.Skia.wasm": "sha256-6IqR/sSCJx24nO873q43W6FKrOWK4hWXPlna3IxbemA=",
       "Avalonia.Themes.Fluent.wasm": "sha256-g79WqsmbBgqKL/pZ33YPW0ZJxPuvLs0y30S54nGJIZ4=",
       "HarfBuzzSharp.wasm": "sha256-zLi92y5FIh7Tsp2/f8cDwy2FU75vKbgJdNPIODw/hjc=",
-      "Primus.Browser.wasm": "sha256-XqIh0y9b6bDpOJrxVye6dTfM0/hc5okQH0lI6oPHnuM=",
-      "Primus.wasm": "sha256-ANmB4MjU48rUSjLkAXrpUi+j1ulPN6+Amf/+uJVj/QQ=",
+      "Primus.Browser.wasm": "sha256-fBczotukIsuzg1fvVrOwf8asf7pZfC6QErDr7ayG5BA=",
+      "Primus.wasm": "sha256-o9fbsFsPmBt6qrnTsf8UMDXTRKoIJbAeqIezZ8ijzm4=",
       "ReactiveUI.wasm": "sha256-pUA09ipQEw+VH2LDUfWusfZfkd5e3BHvvT0rSF1qp2w=",
       "SkiaSharp.wasm": "sha256-mCs/fCgumlJGhHw7IFNRGJUj0w97baB2+l06JgjXqjg=",
       "Splat.wasm": "sha256-SynOz7CSO3BgQjUf24YD42upKAV945YdFbY9jSKX2Fw=",
