@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Labs.Controls;
 using Avalonia.Threading;
@@ -19,7 +18,7 @@ namespace Primus;
 public class SkPlayersView : SKCanvasView
 {
     private readonly SKColor[] _baseColors =
-    {
+    [
         SKColors.Red,
         SKColors.Green,
         SKColors.Blue,
@@ -30,7 +29,7 @@ public class SkPlayersView : SKCanvasView
         SKColors.Turquoise,
         SKColors.Pink,
         SKColors.Gray
-    };
+    ];
 
     private readonly SKPaint _blackPaint = new()
     {
@@ -105,7 +104,7 @@ public class SkPlayersView : SKCanvasView
         Init();
     }
 
-    private void OnPointerExited(object? sender, PointerEventArgs e)
+    private void OnPointerExited(object sender, PointerEventArgs e)
     {
         var id = e.Pointer.Id - 1000;
         if (id >= _baseColors.Length)
@@ -191,7 +190,7 @@ public class SkPlayersView : SKCanvasView
 
         _isRunning = true;
         _timer.Interval = 10;
-        _timer.Elapsed += (sender, args) =>
+        _timer.Elapsed += (_,_) =>
         {
             if (_endStopwatch.IsRunning)
             {
@@ -208,7 +207,7 @@ public class SkPlayersView : SKCanvasView
         _timer.Start();
     }
 
-    private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
     {
         var id = e.Pointer.Id - 1000;
 
@@ -232,7 +231,7 @@ public class SkPlayersView : SKCanvasView
         player?.Shrink();
     }
 
-    private void OnPointerMoved(object? sender, PointerEventArgs e)
+    private void OnPointerMoved(object sender, PointerEventArgs e)
     {
         var id = e.Pointer.Id - 1000;
 
@@ -254,7 +253,7 @@ public class SkPlayersView : SKCanvasView
     }
 
 
-    private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
+    private void OnPointerPressed(object sender, PointerPressedEventArgs e)
     {
         var id = e.Pointer.Id - 1000;
 
@@ -335,7 +334,7 @@ public class SkPlayersView : SKCanvasView
         }
     }
 
-    private void B_Gone(object? sender, EventArgs e)
+    private void B_Gone(object sender, EventArgs e)
     {
         _reset = true;
         if (sender is Player p)
@@ -367,7 +366,7 @@ public class SkPlayersView : SKCanvasView
         }
     }
 
-    private void B_Ready(object? sender, EventArgs e)
+    private void B_Ready(object sender, EventArgs e)
     {
         var boxesCount = 0;
         var readyCount = 0;
@@ -402,7 +401,7 @@ public class SkPlayersView : SKCanvasView
         }
     }
 
-    private void B_SelectionFinished(object? sender, EventArgs e)
+    private void B_SelectionFinished(object sender, EventArgs e)
     {
         lock (_o)
         {
@@ -447,90 +446,7 @@ public class SkPlayersView : SKCanvasView
             (float) (CanvasSize.Height * pt.Y / bounds.Height * _screenDensity));
     }
 
-    // private void OnTouchEffectAction(object sender, TouchActionEventArgs args)
-    //     {
-    //         var id = (int)args.Id;
-    //
-    //         if (id >= _baseColors.Length)
-    //         {
-    //             return;
-    //         }
-    //         if (_playerSelectionComplete)
-    //         {
-    //             return;
-    //         }
-    //         var type = args.Type;
-    //         var player = _players.ContainsKey(id) ? _players[id] : null;
-    //
-    //         switch (type)
-    //         {
-    //             case TouchActionType.Pressed:
-    //                 if (_text == AppResources.TapAndHold)
-    //                 {
-    //                     _text = AppResources.OneMoreFinger;
-    //                 }
-    //                 else if (id > 0 && _text == AppResources.OneMoreFinger)
-    //                 {
-    //                     _text = AppResources.Wait;
-    //                 }
-    //
-    //                 if (_playerSelectionComplete)
-    //                 {
-    //                     return;
-    //                 }
-    //
-    //                 try
-    //                 {
-    //                     Vibration.Vibrate(150);
-    //                 }
-    //                 catch (FeatureNotSupportedException)
-    //                 {
-    //                     // Do nothing
-    //                 }
-    //                 catch
-    //                 {
-    //                     // No idea what happened....
-    //                 }
-    //
-    //                 Stop();
-    //                 if (player is null)
-    //                 {
-    //                     var b = new Player(ConvertToPixel(args.Location), _baseColors[id], id, _screenDensity);
-    //                     b.Gone += B_Gone;
-    //                     b.Ready += B_Ready;
-    //                     b.SelectionFinished += B_SelectionFinished;
-    //                     _players[id] = b;
-    //                 }
-    //                 else
-    //                 {
-    //                     player.Center = ConvertToPixel(args.Location);
-    //                     player.Expand();
-    //                 }
-    //
-    //                 break;
-    //
-    //             case TouchActionType.Moved:
-    //                 if (player != null)
-    //                 {
-    //                     player.Center = ConvertToPixel(args.Location);
-    //                 }
-    //
-    //                 break;
-    //
-    //             case TouchActionType.Cancelled:
-    //             case TouchActionType.Exited:
-    //             case TouchActionType.Released:
-    //                 if (_playerSelectionComplete)
-    //                 {
-    //                     return;
-    //                 }
-    //                 Stop();
-    //                 player?.Shrink();
-    //                 break;
-    //         }
-    //     }
-
-    public static SKTypeface GetTypeface(string fullFontName)
+    private static SKTypeface GetTypeface(string fullFontName)
     {
         var assembly = typeof(SkPlayersView).Assembly;
         var stream = assembly.GetManifestResourceStream("Primus.Font." + fullFontName);
