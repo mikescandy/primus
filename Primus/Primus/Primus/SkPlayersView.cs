@@ -16,6 +16,7 @@ using Avalonia.Threading;
 using primus.app;
 using Primus.Models;
 using SkiaSharp;
+using Pointer = Avalonia.Input.Pointer;
 using SKPaintSurfaceEventArgs = Avalonia.Labs.Controls.SKPaintSurfaceEventArgs;
 
 namespace Primus;
@@ -99,6 +100,7 @@ public class SkPlayersView : SKCanvasView
        PointerPressed+= OnPointerPressed;
         PointerMoved+= OnPointerMoved;
         PointerReleased+= OnPointerReleased;
+        PointerExited+= OnPointerExited;
         _colors = new AvailableColor[_baseColors.Length];
         _screenDensity = 1f;
         _textPaint.TextSize = 50f * _screenDensity;
@@ -120,7 +122,26 @@ public class SkPlayersView : SKCanvasView
         Init();
     }
 
-  
+    private void OnPointerExited(object? sender, PointerEventArgs e)
+    {
+        var id = e.Pointer.Id-1000;
+        if (id >= _baseColors.Length)
+        {
+            return;
+        }
+        if (_playerSelectionComplete)
+        {
+            return;
+        }
+         
+        var player = _players.ContainsKey(id) ? _players[id] : null;
+        if (_playerSelectionComplete)
+        {
+            return;
+        }
+        Stop();
+        player?.Shrink();
+    }
 
 
     private void Init()
@@ -205,7 +226,8 @@ public class SkPlayersView : SKCanvasView
     }
     private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
-        var id = e.Pointer.Id%10;
+        var id = e.Pointer.Id-1000;
+
         if (id >= _baseColors.Length)
         {
             return;
@@ -225,7 +247,8 @@ public class SkPlayersView : SKCanvasView
     }
     private void OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        var id = e.Pointer.Id%10;
+        var id = e.Pointer.Id-1000;
+
         if (id >= _baseColors.Length)
         {
             return;
@@ -245,7 +268,8 @@ public class SkPlayersView : SKCanvasView
     
     private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        var id = e.Pointer.Id%10;
+        var id = e.Pointer.Id-1000;
+
         if (id >= _baseColors.Length)
         {
             return;
