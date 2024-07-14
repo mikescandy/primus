@@ -45,7 +45,7 @@ jobs:
       run: DotNetCompress -d Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/ -p '*.wasm' --format gz --threads 4
 
     - name: Change base-tag in index.html from / to Primus
-      run: sed -i 's/<base href="\/" \/>/<base href="\/Primus\/" \/>/g' Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/index.html
+      run: sed -i 's/<base href="\/" \/>/<base href="\/primus\/" \/>/g' Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/index.html
 
     - name: copy index.html to 404.html
       run: cp Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/index.html Primus/Primus/Primus.Browser/bin/Release/net8.0-browser/browser-wasm/AppBundle/404.html
