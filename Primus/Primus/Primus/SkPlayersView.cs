@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Timers;
 using Avalonia;
@@ -14,8 +16,61 @@ using SKPaintSurfaceEventArgs = Avalonia.Labs.Controls.SKPaintSurfaceEventArgs;
 
 namespace Primus;
 
+using SkiaSharp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class ColorPool
+{
+    private class ColorEntry
+    {
+        public SKColor Color { get; }
+        public bool IsAvailable { get; set; }
+
+        public ColorEntry(SKColor color)
+        {
+            Color = color;
+            IsAvailable = true;
+        }
+    }
+
+    private readonly List<ColorEntry> _colors;
+
+    public ColorPool(IEnumerable<SKColor> initialColors)
+    {
+        if (initialColors == null) throw new ArgumentNullException(nameof(initialColors));
+        _colors = initialColors.Select(color => new ColorEntry(color)).ToList();
+    }
+
+    public SKColor? BorrowColor()
+    {
+        var availableColor = _colors.FirstOrDefault(c => c.IsAvailable);
+        if (availableColor != null)
+        {
+            availableColor.IsAvailable = false;
+            return availableColor.Color;
+        }
+        return null; // Or throw an exception if you prefer
+    }
+
+    public void ReturnColor(SKColor? color)
+    {
+        var colorEntry = _colors.FirstOrDefault(c => c.Color == color);
+        if (colorEntry != null)
+        {
+            colorEntry.IsAvailable = true;
+        }
+        else
+        {
+            throw new InvalidOperationException("This color does not belong to the pool.");
+        }
+    }
+}
+
 public class SkPlayersView : SKCanvasView
 {
+     
     private readonly SKColor[] _baseColors =
     [
         SKColors.Red,
@@ -36,7 +91,7 @@ public class SkPlayersView : SKCanvasView
         Color = SKColors.Black
     };
 
-    private readonly AvailableColor[] _colors;
+    // private readonly AvailableColor[] _colors;
 
     private readonly float _endBlackCircleRadius;
 
@@ -44,7 +99,7 @@ public class SkPlayersView : SKCanvasView
 
     private readonly object _o = new();
 
-    private readonly Dictionary<int, Player> _players = new();
+    private readonly ConcurrentDictionary<int, Player> _players = new();
 
     private readonly Random _rnd = new();
 
@@ -77,22 +132,25 @@ public class SkPlayersView : SKCanvasView
     private string _text;
     private double _textT;
 
+    private ColorPool _colorPool;
+    
     public SkPlayersView()
     {
+        _colorPool = new ColorPool(_baseColors);
         PointerPressed += OnPointerPressed;
         PointerMoved += OnPointerMoved;
         PointerReleased += OnPointerReleased;
         PointerExited += OnPointerExited;
         
-        _colors = new AvailableColor[_baseColors.Length];
+       // _colors = new AvailableColor[_baseColors.Length];
         _screenDensity = 1f;
         _textPaint.TextSize = 50f * _screenDensity;
         IgnorePixelScaling = true;
-        for (var index = 0; index < _baseColors.Length; index++)
-        {
-            var baseColor = _baseColors[index];
-            _colors[index] = new AvailableColor(baseColor);
-        }
+        // for (var index = 0; index < _baseColors.Length; index++)
+        // {
+        //     var baseColor = _baseColors[index];
+        //     _colors[index] = new AvailableColor(baseColor);
+        // }
 
         _endBlackCircleRadius = _screenDensity * 70f * 2f;
 
@@ -105,6 +163,7 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerExited(object sender, PointerEventArgs e)
     {
+        Console.WriteLine($"OnPointerExited - {e.Pointer.Id}");
         if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out _))
         {
             return;
@@ -201,7 +260,8 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
     {
-        if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out _))
+        Console.WriteLine($"OnPointerReleased - {e.Pointer.Id}");
+        if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out var id))
         {
             return;
         }
@@ -213,6 +273,9 @@ public class SkPlayersView : SKCanvasView
 
         Stop();
         player?.Shrink();
+        //var color = _playerColors[id];
+        //_colorPool.ReturnColor(color);
+
     }
 
     private void OnPointerMoved(object sender, PointerEventArgs e)
@@ -232,12 +295,7 @@ public class SkPlayersView : SKCanvasView
     private bool TryGetPlayerFromPointerEvenArgs(PointerEventArgs e, out Player player, out int id)
     {
         player = null;
-        id = e.Pointer.Id - 1000;
-
-        if (id >= _baseColors.Length)
-        {
-            return false;
-        }
+        id = e.Pointer.Id ;
 
         if (_playerSelectionComplete)
         {
@@ -250,19 +308,22 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerPressed(object sender, PointerPressedEventArgs e)
     {
-        if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out var id))
-        {
-            return;
-        }
+        Console.WriteLine($"OnPointerPressed - {e.Pointer.Id}");
+        
+        // if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out var id))
+        // {
+        //     return;
+        // }
         
         if (_text == "Tap And Hold")
         {
             _text = "One More Finger";
         }
-        else if (id > 0 && _text == "One More Finger")
+        else if (_text == "One More Finger" && _players.Count > 1)
         {
             _text = "Wait";
         }
+         
 
         if (_playerSelectionComplete)
         {
@@ -270,19 +331,23 @@ public class SkPlayersView : SKCanvasView
         }
         
         Stop();
-        if (player is null)
-        {
-            var b = new Player(ConvertToPixel(e.GetPosition(this)), _baseColors[id], id, _screenDensity);
+        // if (player is null)
+        // {
+            var color = _colorPool.BorrowColor();
+            Console.WriteLine(color.Value);
+            var b = new Player(ConvertToPixel(e.GetPosition(this)), color.Value, e.Pointer.Id, _screenDensity);
+            b.Expand();
             b.Gone += B_Gone;
             b.Ready += B_Ready;
             b.SelectionFinished += B_SelectionFinished;
-            _players[id] = b;
-        }
-        else
-        {
-            player.Center = ConvertToPixel(e.GetPosition(this));
-            player.Expand();
-        }
+            _players[e.Pointer.Id] = b;
+            
+        //}
+        // else
+        // {
+        //     player.Center = ConvertToPixel(e.GetPosition(this));
+        //     player.Expand();
+        // }
     }
 
     private void ClearBox(int id)
@@ -290,14 +355,15 @@ public class SkPlayersView : SKCanvasView
         var index = id;
         if (_players[index] != null)
         {
-            for (var i = 0; i < _colors.Length; i++)
-            {
-                if (_players[index].Color == _colors[i].Color)
-                {
-                    _colors[i].Available = true;
-                    break;
-                }
-            }
+            // for (var i = 0; i < _colors.Length; i++)
+            // {
+            //     if (_players[index].Color == _colors[i].Color)
+            //     {
+            //         _colors[i].Available = true;
+            //         break;
+            //     }
+            // }
+            _colorPool.ReturnColor(_players[id].Color);
 
             _players[id].Shrink();
             _players[id].Ready -= B_Ready;
@@ -305,6 +371,7 @@ public class SkPlayersView : SKCanvasView
             _players[id].Gone -= B_Gone;
             _players[id].Dispose();
             _players[id] = null;
+            _players.TryRemove(id, out _);
         }
     }
 
@@ -344,18 +411,28 @@ public class SkPlayersView : SKCanvasView
     {
         var boxesCount = 0;
         var readyCount = 0;
-        for (var i = 0; i < _players.Count; i++)
+        foreach (var player in _players.Values)
         {
-            if (_players[i] != null)
-            {
-                boxesCount++;
+            boxesCount++;
 
-                if (_players[i].IsReady)
-                {
-                    readyCount++;
-                }
+            if (player.IsReady)
+            {
+                readyCount++;
             }
         }
+        
+        // for (var i = 0; i < _players.Count; i++)
+        // {
+        //     if (_players[i] != null)
+        //     {
+        //         boxesCount++;
+        //
+        //         if (_players[i].IsReady)
+        //         {
+        //             readyCount++;
+        //         }
+        //     }
+        // }
 
         if (readyCount >= 2 && boxesCount == readyCount)
         {
@@ -365,14 +442,21 @@ public class SkPlayersView : SKCanvasView
 
     private void Start()
     {
-        for (var i = 0; i < _players.Count; i++)
+        _playerSelection = -1;
+
+        foreach (var player in _players.Values)
         {
-            var index = i;
-            if (_players.TryGetValue(index, out var player))
-            {
-                player?.StartSelection();
-            }
+            player.StartSelection();
         }
+        
+        // for (var i = 0; i < _players.Count; i++)
+        // {
+        //     var index = i;
+        //     if (_players.TryGetValue(index, out var player))
+        //     {
+        //         player?.StartSelection();
+        //     }
+        // }
     }
 
     private void B_SelectionFinished(object sender, EventArgs e)
@@ -403,14 +487,18 @@ public class SkPlayersView : SKCanvasView
 
     private void Stop()
     {
-        for (var i = 0; i < _players.Count; i++)
+        foreach (var player in _players.Values)
         {
-            var index = i;
-            if (_players.TryGetValue(index, out var player))
-            {
-                player?.StopSelection();
-            }
+            player?.StopSelection();
         }
+        // for (var i = 0; i < _players.Count; i++)
+        // {
+        //     var index = i;
+        //     if (_players.TryGetValue(index, out var player))
+        //     {
+        //         player?.StopSelection();
+        //     }
+        // }
     }
 
     private SKPoint ConvertToPixel(Point pt)
@@ -529,12 +617,10 @@ public class SkPlayersView : SKCanvasView
             }
         }
 
-        for (var i = 0; i < _players.Count; i++)
+        foreach (var player in _players.Values)
         {
-            if (_players.TryGetValue(i, out var player))
-            {
-                player?.Paint(args.Surface.Canvas);
-            }
+            player?.Paint(args.Surface.Canvas);
         }
+        
     }
 }
