@@ -468,15 +468,23 @@ public class SkPlayersView : SKCanvasView
             var ids = _players.Where(m => m.Value != null).Select(m => m.Key).ToArray();
             var boxCount = ids.Length;
             var raid = _rnd.Next(boxCount);
+            
             _playerSelection = ids[raid];
 
-            for (var i = 0; i < _players.Count; i++)
+            foreach (var player in _players)
             {
-                if (i != ids[raid])
+                if (player.Key != _playerSelection)
                 {
-                    ClearBox(i);
+                    ClearBox(player.Key);
                 }
             }
+            // for (var i = 0; i < _players.Count; i++)
+            // {
+            //     if (i != ids[raid])
+            //     {
+            //         ClearBox(i);
+            //     }
+            // }
 
             _players[_playerSelection].StopSelection();
             _playerSelectionComplete = true;
