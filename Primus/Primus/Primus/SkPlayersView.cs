@@ -272,16 +272,28 @@ public class SkPlayersView : SKCanvasView
                 return;
             }
 
-            if (!_players.ContainsKey(e.Pointer.Id))
+            var playerExists = _players.TryGetValue(e.Pointer.Id, out var player);
+            
+            if (!playerExists)
             {
                 Stop();
                 var color = _colorPool.BorrowColor();
+                if (color is null)
+                {
+                    return;
+                }
+                
                 var b = new Player(ConvertToPixel(e.GetPosition(this)), color.Value, e.Pointer.Id, _screenDensity);
                 b.Expand();
                 b.Gone += B_Gone;
                 b.Ready += B_Ready;
                 b.SelectionFinished += B_SelectionFinished;
                 _players[e.Pointer.Id] = b;
+            }
+            else
+            {
+                Stop();
+                player?.Expand();
             }
         }
     }

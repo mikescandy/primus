@@ -35,7 +35,6 @@ public class ColorPool
             availableColor.IsAvailable = false;
             return availableColor.Color;
         }
-
          
         return null; // Or throw an exception if you prefer
     }
