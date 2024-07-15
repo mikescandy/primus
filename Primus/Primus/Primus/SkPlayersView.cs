@@ -384,7 +384,7 @@ public class SkPlayersView : SKCanvasView
             ClearBox(id);
         }
 
-        switch (_players.Count(b => b.Value != null))
+        switch (_players.Values.Count)
         {
             case 0:
                 _text = "Tap And Hold";
@@ -399,7 +399,7 @@ public class SkPlayersView : SKCanvasView
                 break;
         }
 
-        if (_players.Values.All(m => m is null))
+        if (_players.Values.Count==0)
         {
             _text = "Tap And Hold";
             _playerSelection = -1;
