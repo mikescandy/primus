@@ -353,15 +353,19 @@ public class SkPlayersView : SKCanvasView
     {
         var boxesCount = 0;
         var readyCount = 0;
-        foreach (var player in _players.Values)
-        {
-            boxesCount++;
-
-            if (player.IsReady)
-            {
-                readyCount++;
-            }
-        }
+        
+        boxesCount = _players.Count;
+        readyCount = _players.Values.Count(p=>p.IsReady);
+        
+        // foreach (var player in _players.Values)
+        // {
+        //     boxesCount++;
+        //
+        //     if (player.IsReady)
+        //     {
+        //         readyCount++;
+        //     }
+        // }
 
         // for (var i = 0; i < _players.Count; i++)
         // {
