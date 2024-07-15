@@ -260,6 +260,9 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerReleased(object sender, PointerReleasedEventArgs e)
     {
+        lock (_o)
+        {
+            
         Console.WriteLine($"OnPointerReleased - {e.Pointer.Id}");
         if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out var id))
         {
@@ -275,6 +278,7 @@ public class SkPlayersView : SKCanvasView
         player?.Shrink();
         //var color = _playerColors[id];
         //_colorPool.ReturnColor(color);
+        }
 
     }
 
@@ -308,31 +312,34 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerPressed(object sender, PointerPressedEventArgs e)
     {
-        Console.WriteLine($"OnPointerPressed - {e.Pointer.Id}");
-        
-        // if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out var id))
-        // {
-        //     return;
-        // }
-        
-        if (_text == "Tap And Hold")
+        lock (_o)
         {
-            _text = "One More Finger";
-        }
-        else if (_text == "One More Finger" && _players.Count > 1)
-        {
-            _text = "Wait";
-        }
-         
 
-        if (_playerSelectionComplete)
-        {
-            return;
-        }
-        
-        Stop();
-        // if (player is null)
-        // {
+            Console.WriteLine($"OnPointerPressed - {e.Pointer.Id}");
+
+            // if (!TryGetPlayerFromPointerEvenArgs(e, out var player, out var id))
+            // {
+            //     return;
+            // }
+
+            if (_text == "Tap And Hold")
+            {
+                _text = "One More Finger";
+            }
+            else if (_text == "One More Finger" && _players.Count > 1)
+            {
+                _text = "Wait";
+            }
+
+
+            if (_playerSelectionComplete)
+            {
+                return;
+            }
+
+            Stop();
+            // if (player is null)
+            // {
             var color = _colorPool.BorrowColor();
             Console.WriteLine(color.Value);
             var b = new Player(ConvertToPixel(e.GetPosition(this)), color.Value, e.Pointer.Id, _screenDensity);
@@ -341,13 +348,14 @@ public class SkPlayersView : SKCanvasView
             b.Ready += B_Ready;
             b.SelectionFinished += B_SelectionFinished;
             _players[e.Pointer.Id] = b;
-            
-        //}
-        // else
-        // {
-        //     player.Center = ConvertToPixel(e.GetPosition(this));
-        //     player.Expand();
-        // }
+
+            //}
+            // else
+            // {
+            //     player.Center = ConvertToPixel(e.GetPosition(this));
+            //     player.Expand();
+            // }
+        }
     }
 
     private void ClearBox(int id)
