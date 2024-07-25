@@ -5,7 +5,9 @@ using System.Timers;
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.Labs.Controls;
+using Avalonia.Logging;
 using Avalonia.Threading;
+using Splat;
 using SKPaintSurfaceEventArgs = Avalonia.Labs.Controls.SKPaintSurfaceEventArgs;
 
 namespace Primus;
@@ -256,9 +258,19 @@ public class SkPlayersView : SKCanvasView
 
     private void OnPointerPressed(object sender, PointerPressedEventArgs e)
     {
+        //print to console all properties of e
+        Console.WriteLine(e.Pointer.Type);
+        Console.WriteLine(e.ClickCount);
+        Console.WriteLine(e.KeyModifiers);
+        Console.WriteLine(e.RoutedEvent?.Name);
+        
+        Console.WriteLine(e.ToString());
+        e.PreventGestureRecognition();
+        e.Handled = true;
         lock (_o)
         {
-            Console.WriteLine($"OnPointerPressed - {e.Pointer.Id}");
+            var id = e.Pointer.Id;
+            Console.WriteLine($"OnPointerPressed - {id}");
 
             _text = _text switch
             {
@@ -283,12 +295,12 @@ public class SkPlayersView : SKCanvasView
                     return;
                 }
                 
-                var b = new Player(ConvertToPixel(e.GetPosition(this)), color.Value, e.Pointer.Id, _screenDensity);
+                var b = new Player(ConvertToPixel(e.GetPosition(this)), color.Value, id, _screenDensity);
                 b.Expand();
                 b.Gone += B_Gone;
                 b.Ready += B_Ready;
                 b.SelectionFinished += B_SelectionFinished;
-                _players[e.Pointer.Id] = b;
+                _players[id] = b;
             }
             else
             {
@@ -356,7 +368,7 @@ public class SkPlayersView : SKCanvasView
         
         boxesCount = _players.Count;
         readyCount = _players.Values.Count(p=>p.IsReady);
-        
+        Console.WriteLine($"BoxesCount: {boxesCount}, ReadyCount: {readyCount}");
         // foreach (var player in _players.Values)
         // {
         //     boxesCount++;
